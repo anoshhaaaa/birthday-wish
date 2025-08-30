@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Wish</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #F8E8EE;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            transition: background-color 0.5s ease-in-out;
+            overflow: hidden; /* This is key for fireworks */
+        }
+
+        .container {
+            padding: 2.5rem;
+            background: #FFFFFF;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
+            border: 1px solid #D8F2E1;
+            z-index: 2; /* Ensure container is above fireworks */
+            position: relative;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .title {
+            font-size: 3rem;
+            color: #FFB3C6;
+            margin-bottom: 1.5rem;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        #reveal-btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background-color: #A8DDCF;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #reveal-btn:hover {
+            background-color: #8FD8BD;
+            transform: translateY(-2px);
+        }
+
+        #message-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 230, 230, 0.7);
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .message-box {
+            padding: 3rem;
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.6s ease-in-out;
+            max-width: 500px;
+            color: #555;
+            line-height: 1.6;
+            border: 2px solid #FFDDC1;
+        }
+
+        /* JavaScript-controlled class */
+        .active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .active .message-box {
+            transform: scale(1) !important;
+            opacity: 1 !important;
+        }
+
+        /* Fireworks CSS */
+        #fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .firework {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: transparent;
+            animation: firework-burst 1.5s ease-out forwards;
+            box-shadow:
+                0 0 10px 0 rgba(255, 255, 255, 0.8),
+                -15px -15px 25px 5px #FFB3C6,
+                -10px 10px 30px 5px #A8DDCF,
+                15px 15px 35px 5px #FFDDC1,
+                10px -10px 40px 5px #F8E8EE;
+        }
+
+        @keyframes firework-burst {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(1) translateX(var(--x-offset, 0)) translateY(var(--y-offset, 0)); opacity: 0; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap">
+</head>
+<body>
+
+    <div id="fireworks-container"></div>
+    <div class="container">
+        <h1 class="title">Happy Birthday!</h1>
+        <button id="reveal-btn">Click Me!</button>
+    </div>
+
+    <div id="message-container" style="display: none;">
+        <div class="message-box">
+            <p>Happy Birthday to the most amazing person in the world! You bring so much joy to my life, and I hope your special day is filled with everything you love. Wishing you a year ahead full of happiness and success. 🎉</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealBtn = document.getElementById('reveal-btn');
+            const container = document.querySelector('.container');
+            const messageContainer = document.getElementById('message-container');
+            const fireworksContainer = document.getElementById('fireworks-container');
+
+            revealBtn.addEventListener('click', () => {
+                container.style.opacity = '0';
+                setTimeout(() => {
+                    container.style.display = 'none';
+                    messageContainer.style.display = 'flex';
+                    setTimeout(() => {
+                        messageContainer.classList.add('active');
+                        startFireworks();
+                    }, 10);
+                }, 500);
+            });
+
+            function startFireworks() {
+                for (let i = 0; i < 20; i++) {
+                    createFirework();
+                }
+            }
+
+            function createFirework() {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+
+                firework.style.left = `${Math.random() * 100}vw`;
+                firework.style.top = `${Math.random() * 100}vh`;
+                firework.style.setProperty('--x-offset', `${(Math.random() - 0.5) * 200}px`);
+                firework.style.setProperty('--y-offset', `${(Math.random() - 0.5) * 200}px`);
+
+                fireworksContainer.appendChild(firework);
+
+                firework.addEventListener('animationend', () => {
+                    firework.remove();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
